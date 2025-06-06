@@ -7,6 +7,8 @@
 #include "PlayerCharater.generated.h"
 
 class UPaperFlipbook;
+class UCameraComponent;
+class USpringArmComponent;
 /**
  * 
  */
@@ -20,7 +22,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	//virtual void Tick(float DeltaTime) override;
+	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
     void MoveRight(float Value);
@@ -37,4 +39,14 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
     UPaperFlipbook* JumpAnimation;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+    USpringArmComponent* CameraBoom;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+    UCameraComponent* SideViewCameraComponent;
+
+private:
+    float MoveValue;
+
 };

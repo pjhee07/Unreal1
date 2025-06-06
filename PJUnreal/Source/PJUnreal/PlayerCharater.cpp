@@ -4,6 +4,8 @@
 #include "PlayerCharater.h"
 #include "PaperFlipbookComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Components/InputComponent.h"
 
 APlayerCharater::APlayerCharater()
@@ -16,6 +18,23 @@ APlayerCharater::APlayerCharater()
     GetCharacterMovement()->MaxWalkSpeed = 600.f;
 
     bUseControllerRotationYaw = false;
+
+    CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+    CameraBoom->SetupAttachment(RootComponent);
+    CameraBoom->TargetArmLength = 500.f;
+    CameraBoom->bDoCollisionTest = false;
+    CameraBoom->bInheritPitch = false;
+    CameraBoom->bInheritYaw = false;
+    CameraBoom->bInheritRoll = false;
+    CameraBoom->SetUsingAbsoluteRotation(true);
+    CameraBoom->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+
+    SideViewCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("SideViewCamera"));
+    SideViewCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+    SideViewCameraComponent->bUsePawnControlRotation = false;
+
+    MoveValue = 0.f;
+
 }
 
 void APlayerCharater::BeginPlay()
@@ -35,11 +54,13 @@ void APlayerCharater::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
     PlayerInputComponent->BindAxis("MoveRight", this, &APlayerCharater::MoveRight);
     PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharater::StartJump);
-    PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharater::StopJump);
+    PlayerInputComponent->BindAction("Jump", IE_Released, this, &APlayerCharater::StopJump);
 }
 
 void APlayerCharater::MoveRight(float Value)
 {
+    MoveValue = Value;
+
     AddMovementInput(FVector(1.f, 0.f, 0.f), Value);
 
     if (Value < 0.f)
@@ -60,14 +81,14 @@ void APlayerCharater::StopJump()
 
 void APlayerCharater::UpdateAnimation()
 {
-    const FVector Velocity = GetVelocity();
+    //const FVector Velocity = GetVelocity();
     const bool bIsFalling = GetCharacterMovement()->IsFalling();
 
     if (bIsFalling && JumpAnimation)
     {
         GetSprite()->SetFlipbook(JumpAnimation);
     }
-    else if (Velocity.SizeSquared() > 0.f && RunAnimation)
+    else if (FMath::Abs(MoveValue) > 0.1f && RunAnimation)
     {
         GetSprite()->SetFlipbook(RunAnimation);
     }
