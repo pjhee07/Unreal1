@@ -64,9 +64,9 @@ void APlayerCharater::MoveRight(float Value)
     AddMovementInput(FVector(1.f, 0.f, 0.f), Value);
 
     if (Value < 0.f)
-        GetSprite()->SetRelativeRotation(FRotator(0.f, 0.f, 0.f)); 
-    else if (Value > 0.f)
         GetSprite()->SetRelativeRotation(FRotator(0.f, 180.f, 0.f)); 
+    else if (Value > 0.f)
+        GetSprite()->SetRelativeRotation(FRotator(0.f, 0.f, 0.f)); 
 }
 
 void APlayerCharater::StartJump()
