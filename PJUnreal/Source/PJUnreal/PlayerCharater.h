@@ -33,6 +33,7 @@ protected:
 
     void RespawnAtStart();
 
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
     UPaperFlipbook* IdleAnimation;
 

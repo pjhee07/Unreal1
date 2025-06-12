@@ -41,6 +41,8 @@ void APlayerCharater::BeginPlay()
     Super::BeginPlay();
 
     StartLocation = GetActorLocation();
+
+    
 }
 
 void APlayerCharater::Tick(float DeltaTime)
