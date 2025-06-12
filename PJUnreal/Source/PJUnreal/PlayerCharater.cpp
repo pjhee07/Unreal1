@@ -34,18 +34,24 @@ APlayerCharater::APlayerCharater()
     SideViewCameraComponent->bUsePawnControlRotation = false;
 
     MoveValue = 0.f;
-
 }
 
 void APlayerCharater::BeginPlay()
 {
     Super::BeginPlay();
+
+    StartLocation = GetActorLocation();
 }
 
 void APlayerCharater::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
     UpdateAnimation();
+    
+    if (GetActorLocation().Z < -100.f)
+    {
+        RespawnAtStart();
+    }
 }
 
 void APlayerCharater::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -96,4 +102,12 @@ void APlayerCharater::UpdateAnimation()
     {
         GetSprite()->SetFlipbook(IdleAnimation);
     }
+}
+
+void APlayerCharater::RespawnAtStart()
+{
+    GetCharacterMovement()->StopMovementImmediately();
+    SetActorEnableCollision(false);
+    TeleportTo(StartLocation, GetActorRotation());
+    SetActorEnableCollision(true);
 }

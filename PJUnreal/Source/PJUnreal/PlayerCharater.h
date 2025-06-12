@@ -31,6 +31,8 @@ protected:
 
     void UpdateAnimation();
 
+    void RespawnAtStart();
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
     UPaperFlipbook* IdleAnimation;
 
@@ -48,5 +50,8 @@ protected:
 
 private:
     float MoveValue;
+
+private:
+    FVector StartLocation;
 
 };
